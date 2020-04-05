@@ -1,0 +1,26 @@
+{
+  "workbench.iconTheme": "vscode-icons",
+  "todo-tree.tree.showScanModeButton": false,
+  "emmet.includeLanguages": {
+    "vue": "html",
+    "vue-html": "html"
+  },
+  "path-intellisense.extensionOnImport": false,
+  "path-intellisense.mappings": {
+    "/": "${workspaceRoot}",
+    "@": "${workspaceRoot}/src"
+  },
+  "vetur.format.defaultFormatter.html": "prettier",
+  "vetur.validation.template": false,
+  "vetur.completion.useScaffoldSnippets": false,
+  "eslint.validate": [
+    "vue",
+    "html",
+    "javascript",
+    "typescript"
+  ],
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "prettier.proseWrap": "always"
+}
