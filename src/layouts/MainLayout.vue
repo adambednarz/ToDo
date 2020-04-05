@@ -1,17 +1,8 @@
 <template>
-  <q-layout view="hHh LpR lFf">
+  <q-layout view="hHh LpR fFf">
     <q-header elevated>
       <q-toolbar class="glossy">
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="leftDrawerOpen = !leftDrawerOpen"
-        />
-
-        <q-toolbar-title>
+        <q-toolbar-title class="absolute-center">
           Todo app
         </q-toolbar-title>
       </q-toolbar>
@@ -19,6 +10,8 @@
 
     <q-drawer
       v-model="leftDrawerOpen"
+      :breakpoint="767"
+      :width="250"
       show-if-above
       bordered
       content-class="bg-grey-1"
@@ -88,8 +81,15 @@ export default {
   },
 };
 </script>
-<style>
-.autoMargin {
-  margin: auto;
+<style lang="scss">
+@media screen and (min-width: 768px) {
+  .q-footer {
+    display: none;
+  }
+}
+.q-footer {
+  .q-tabs {
+    margin: auto;
+  }
 }
 </style>
