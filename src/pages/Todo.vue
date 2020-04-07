@@ -1,6 +1,6 @@
 <template>
   <q-page padding>
-    <q-list separator bordered>
+    <q-list v-if="Object.keys(tasks).length" separator bordered>
       <Task
         v-for="(task, index) in tasks"
         :key="index"
@@ -9,7 +9,7 @@
       ></Task>
     </q-list>
 
-    <div class="absolute-bottom text-center q-mb-md">
+    <div class="fixed-bottom text-center q-mb-lg addButton">
       <q-btn
         round
         color="primary"
@@ -26,8 +26,8 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import Task from '../components/Task.vue';
-import AddTask from '../components/Modals/AddTask.vue';
+import Task from '../components/Tasks/Task';
+import AddTask from '../components/Tasks/Modals/AddTask';
 
 export default {
   components: {
@@ -47,3 +47,10 @@ export default {
   },
 };
 </script>
+<style lang="scss">
+@media screen and (max-width: 768px) {
+  .addButton {
+    margin-bottom: 80px;
+  }
+}
+</style>

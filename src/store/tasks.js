@@ -53,7 +53,7 @@ const actions = {
   },
 };
 const getters = {
-  getTasks: (state) => {
+  getTasks: state => {
     return state.tasks;
   },
 };
