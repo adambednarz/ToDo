@@ -1,13 +1,8 @@
 <template>
   <q-page padding>
-    <q-list v-if="Object.keys(tasks).length" separator bordered>
-      <Task
-        v-for="(task, index) in tasks"
-        :key="index"
-        :task="task"
-        :id="index"
-      ></Task>
-    </q-list>
+    <todo-tasks :todoTasks="todoTasks" />
+    <hr />
+    <completed-tasks :completedTasks="completedTasks" />
 
     <div class="fixed-bottom text-center q-mb-lg addButton">
       <q-btn
@@ -26,12 +21,14 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import Task from '../components/Tasks/Task';
 import AddTask from '../components/Tasks/Modals/AddTask';
+import CompletedTasks from '../components/Tasks/CompletedTasks.vue';
+import TodoTasks from '../components/Tasks/TodoTasks.vue';
 
 export default {
   components: {
-    Task,
+    CompletedTasks,
+    TodoTasks,
     AddTask,
   },
   data() {
@@ -40,8 +37,11 @@ export default {
     };
   },
   computed: {
-    tasks() {
-      return this.$store.getters['tasks/getTasks'];
+    todoTasks() {
+      return this.$store.getters['tasks/getTodoTasks'];
+    },
+    completedTasks() {
+      return this.$store.getters['tasks/getCompletedTasks'];
     },
     // ...mapGetters('tasks', ['getTasks']),
   },
