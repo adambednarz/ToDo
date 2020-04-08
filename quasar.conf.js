@@ -1,12 +1,12 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
-module.exports = function (ctx) {
+module.exports = function(ctx) {
   return {
     // app boot file (/src/boot)
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/cli-documentation/boot-files
-    boot: ['axios'],
+    boot: ['axios', 'firebase'],
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-css
     css: ['app.scss'],
@@ -57,12 +57,14 @@ module.exports = function (ctx) {
         'QSpace',
         'QTab',
         'QTabs',
+        'QTabPanel',
+        'QTabPanels',
         'QTime',
       ],
       directives: ['ClosePopup'],
 
       // Quasar plugins
-      plugins: ['Dialog'],
+      plugins: ['Dialog', 'LocalStorage', 'SessionStorage'],
     },
 
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie

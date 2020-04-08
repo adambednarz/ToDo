@@ -25,7 +25,6 @@ const state = {
 };
 const mutations = {
   ADD_TASK(state, payload) {
-    console.log('mutauins add', payload);
     Vue.set(state.tasks, payload.id, payload.task);
   },
   UPDATE_TASK(state, payload) {
@@ -48,7 +47,6 @@ const actions = {
     commit('UPDATE_TASK', payload);
   },
   removeTask({ commit }, id) {
-    console.log('action', id);
     commit('REMOVE_TASK', id);
   },
 };

@@ -4,15 +4,19 @@
     glossy
     inline-actions
     text-subtitle1
-    class="text-white bg-orange-4 text-center list-header"
+    :class="bgColor"
+    class="text-white  text-center list-header"
   >
     <span class="text-bold"><slot>Default name</slot></span>
   </q-banner>
 </template>
 
 <script>
-export default {};
+export default {
+  props: ['bgColor'],
+};
 </script>
+
 <style lang="scss">
 .list-header {
   border-top-left-radius: 5px;

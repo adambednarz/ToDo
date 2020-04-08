@@ -13,6 +13,11 @@ const routes = [
         name: 'Settings',
         component: () => import('pages/Settings.vue'),
       },
+      {
+        path: '/auth',
+        name: 'Auth',
+        component: () => import('pages/Auth.vue'),
+      },
     ],
   },
 ];
