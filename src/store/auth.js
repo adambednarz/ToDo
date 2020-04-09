@@ -13,7 +13,6 @@ const mutations = {
 };
 const actions = {
   registerUser({}, payload) {
-    console.log('register action', payload);
     firebaseAuth
       .createUserWithEmailAndPassword(payload.email, payload.password)
       .then(respone => {
@@ -27,9 +26,7 @@ const actions = {
     Loading.show();
     firebaseAuth
       .signInWithEmailAndPassword(payload.email, payload.password)
-      .then(respone => {
-        // console.log('response:', respone);
-      })
+      .then(respone => {})
       .catch(error => {
         showErrorMessage(error.message);
       });
@@ -47,6 +44,9 @@ const actions = {
         dispatch('tasks/fbReadData', null, { root: true });
       } else {
         commit('SET_LOGGEDIN', false);
+        commit('tasks/SET_TASK_DOWNLOADED', false, { root: true });
+        commit('tasks/CLEAR_TASKS', null, { root: true });
+
         LocalStorage.set('loggedIn', false);
         this.$router.replace('/auth');
       }

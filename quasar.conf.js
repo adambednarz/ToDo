@@ -55,6 +55,7 @@ module.exports = function(ctx) {
         'QList',
         'QRouteTab',
         'QSpace',
+        'QSpinner',
         'QTab',
         'QTabs',
         'QTabPanel',

@@ -4,6 +4,7 @@ import { firebaseDb, firebaseAuth } from 'src/boot/firebase';
 
 const state = {
   tasks: {},
+  tasksDownloaded: false,
 };
 const mutations = {
   ADD_TASK(state, payload) {
@@ -15,28 +16,41 @@ const mutations = {
   REMOVE_TASK(state, id) {
     Vue.delete(state.tasks, id);
   },
+  CLEAR_TASKS(state) {
+    state.tasks = {};
+  },
+  SET_TASK_DOWNLOADED(state, value) {
+    state.tasksDownloaded = value;
+  },
 };
 const actions = {
-  addTask({ commit }, newTask) {
+  addTask({ dispatch }, newTask) {
     let taskId = uid();
     let payload = {
       id: taskId,
       task: newTask,
     };
-    commit('ADD_TASK', payload);
+    dispatch('fbAddTask', payload);
   },
-  updateTask({ commit }, payload) {
-    commit('UPDATE_TASK', payload);
+  updateTask({ dispatch }, payload) {
+    dispatch('fbUpdateTask', payload);
   },
-  removeTask({ commit }, id) {
-    commit('REMOVE_TASK', id);
+  removeTask({ dispatch }, id) {
+    dispatch('fbRemoveTask', id);
   },
+
+  //firebaseAction
   fbReadData({ commit }) {
     let userId = firebaseAuth.currentUser.uid;
-    let userTask = firebaseDb.ref('tasks/' + userId);
+    let userTasks = firebaseDb.ref('tasks/' + userId);
+
+    // initial check for data
+    userTasks.once('value', snapshot => {
+      commit('SET_TASK_DOWNLOADED', true);
+    });
 
     // child added
-    userTask.on('child_added', snapshot => {
+    userTasks.on('child_added', snapshot => {
       let task = snapshot.val();
       let payload = {
         id: snapshot.key,
@@ -44,8 +58,9 @@ const actions = {
       };
       commit('ADD_TASK', payload);
     });
+
     // child changed
-    userTask.on('child_changed', snapshot => {
+    userTasks.on('child_changed', snapshot => {
       let task = snapshot.val();
       let payload = {
         id: snapshot.key,
@@ -55,10 +70,25 @@ const actions = {
     });
 
     // child removed
-    userTask.on('child_removed', snapshot => {
+    userTasks.on('child_removed', snapshot => {
       let taskId = snapshot.key;
       commit('REMOVE_TASK', taskId);
     });
+  },
+  fbAddTask({}, payload) {
+    let userId = firebaseAuth.currentUser.uid;
+    let taskRef = firebaseDb.ref('tasks/' + userId + '/' + payload.id);
+    taskRef.set(payload.task);
+  },
+  fbUpdateTask({}, payload) {
+    let userId = firebaseAuth.currentUser.uid;
+    let taskRef = firebaseDb.ref('tasks/' + userId + '/' + payload.id);
+    taskRef.update(payload.updates);
+  },
+  fbRemoveTask({}, taskId) {
+    let userId = firebaseAuth.currentUser.uid;
+    let taskRef = firebaseDb.ref('tasks/' + userId + '/' + taskId);
+    taskRef.remove();
   },
 };
 

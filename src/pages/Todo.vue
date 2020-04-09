@@ -1,27 +1,35 @@
 <template>
   <q-page padding>
-    <no-tasks
-      v-if="!Object.keys(todoTasks).length"
-      @addTask="showAddTask = true"
-      class="q-mb-lg"
-    />
-
-    <todo-tasks v-else :todoTasks="todoTasks" />
-
-    <completed-tasks
-      v-if="Object.keys(completedTasks).length"
-      :completedTasks="completedTasks"
-    />
-
-    <div class="fixed-bottom text-center q-mb-lg addButton">
-      <q-btn
-        round
-        color="primary"
-        size="18px"
-        icon="add"
-        @click="showAddTask = true"
+    <template v-if="tasksDownloaded">
+      <no-tasks
+        v-if="!Object.keys(todoTasks).length"
+        @addTask="showAddTask = true"
+        class="q-mb-lg"
       />
-    </div>
+
+      <todo-tasks v-else :todoTasks="todoTasks" />
+
+      <completed-tasks
+        v-if="Object.keys(completedTasks).length"
+        :completedTasks="completedTasks"
+      />
+
+      <div class="fixed-bottom text-center q-mb-lg addButton">
+        <q-btn
+          round
+          color="primary"
+          size="18px"
+          icon="add"
+          @click="showAddTask = true"
+        />
+      </div>
+    </template>
+
+    <template v-else>
+      <span class="absolute-center">
+        <q-spinner color="primary" size="3em" />
+      </span>
+    </template>
     <q-dialog v-model="showAddTask">
       <AddTask @close="showAddTask = false" />
     </q-dialog>
@@ -29,7 +37,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import AddTask from '../components/Tasks/Modals/AddTask';
 import CompletedTasks from '../components/Tasks/CompletedTasks.vue';
 import TodoTasks from '../components/Tasks/TodoTasks.vue';
@@ -53,6 +61,7 @@ export default {
     });
   },
   computed: {
+    ...mapState('tasks', { tasksDownloaded: 'tasksDownloaded' }),
     todoTasks() {
       return this.$store.getters['tasks/getTodoTasks'];
     },
