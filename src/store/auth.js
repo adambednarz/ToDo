@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import { uid } from 'quasar';
 import { firebaseAuth } from 'src/boot/firebase';
-import { LocalStorage } from 'quasar';
+import { LocalStorage, Loading } from 'quasar';
+import { showErrorMessage } from 'src/functions/showErrorMessage';
 
 const state = {
   loggedIn: false,
@@ -20,29 +20,31 @@ const actions = {
         console.log('response:', respone);
       })
       .catch(error => {
-        console.log('error:', error);
+        showErrorMessage(error.message);
       });
   },
   loginUser({}, payload) {
-    console.log('register action', payload);
+    Loading.show();
     firebaseAuth
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(respone => {
-        console.log('response:', respone);
+        // console.log('response:', respone);
       })
       .catch(error => {
-        console.log('error:', error);
+        showErrorMessage(error.message);
       });
   },
   logoutUser() {
     firebaseAuth.signOut();
   },
-  handleAuthStateChange({ commit }) {
+  handleAuthStateChange({ commit, dispatch }) {
     firebaseAuth.onAuthStateChanged(user => {
+      Loading.hide();
       if (user) {
         commit('SET_LOGGEDIN', true);
         LocalStorage.set('loggedIn', true);
         this.$router.push('/');
+        dispatch('tasks/fbReadData', null, { root: true });
       } else {
         commit('SET_LOGGEDIN', false);
         LocalStorage.set('loggedIn', false);
