@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import { uid } from 'quasar';
 import { firebaseDb, firebaseAuth } from 'src/boot/firebase';
+import { showErrorMessage } from 'src/functions/showErrorMessage';
 
 const state = {
   tasks: {},
@@ -42,12 +43,22 @@ const actions = {
   //firebaseAction
   fbReadData({ commit }) {
     let userId = firebaseAuth.currentUser.uid;
+    userId = 'G3FroJr4W6d12hQb2RtafHDZDFv2';
     let userTasks = firebaseDb.ref('tasks/' + userId);
 
     // initial check for data
-    userTasks.once('value', snapshot => {
-      commit('SET_TASK_DOWNLOADED', true);
-    });
+    userTasks.once(
+      'value',
+      snapshot => {
+        commit('SET_TASK_DOWNLOADED', true);
+      },
+      error => {
+        if (error) {
+          showErrorMessage(error.message);
+          this.$router.replace('/auth');
+        }
+      },
+    );
 
     // child added
     userTasks.on('child_added', snapshot => {
@@ -77,18 +88,33 @@ const actions = {
   },
   fbAddTask({}, payload) {
     let userId = firebaseAuth.currentUser.uid;
+    userId = 'G3FroJr4W6d12hQb2RtafHDZDFv2';
     let taskRef = firebaseDb.ref('tasks/' + userId + '/' + payload.id);
-    taskRef.set(payload.task);
+    taskRef.set(payload.task, error => {
+      if (error) {
+        showErrorMessage(error.message);
+      }
+    });
   },
   fbUpdateTask({}, payload) {
     let userId = firebaseAuth.currentUser.uid;
+    userId = 'G3FroJr4W6d12hQb2RtafHDZDFv2';
     let taskRef = firebaseDb.ref('tasks/' + userId + '/' + payload.id);
-    taskRef.update(payload.updates);
+    taskRef.update(payload.updates, error => {
+      if (error) {
+        showErrorMessage(error.message);
+      }
+    });
   },
   fbRemoveTask({}, taskId) {
     let userId = firebaseAuth.currentUser.uid;
+    userId = 'G3FroJr4W6d12hQb2RtafHDZDFv2';
     let taskRef = firebaseDb.ref('tasks/' + userId + '/' + taskId);
-    taskRef.remove();
+    taskRef.remove(error => {
+      if (error) {
+        showErrorMessage(error.message);
+      }
+    });
   },
 };
 
