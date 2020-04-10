@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { uid } from 'quasar';
+import { uid, Notify } from 'quasar';
 import { firebaseDb, firebaseAuth } from 'src/boot/firebase';
 import { showErrorMessage } from 'src/functions/showErrorMessage';
 
@@ -43,7 +43,6 @@ const actions = {
   //firebaseAction
   fbReadData({ commit }) {
     let userId = firebaseAuth.currentUser.uid;
-    userId = 'G3FroJr4W6d12hQb2RtafHDZDFv2';
     let userTasks = firebaseDb.ref('tasks/' + userId);
 
     // initial check for data
@@ -54,8 +53,10 @@ const actions = {
       },
       error => {
         if (error) {
-          showErrorMessage(error.message);
-          this.$router.replace('/auth');
+          if (error.message) {
+            showErrorMessage(error.message);
+            this.$router.replace('/auth');
+          }
         }
       },
     );
@@ -88,31 +89,38 @@ const actions = {
   },
   fbAddTask({}, payload) {
     let userId = firebaseAuth.currentUser.uid;
-    userId = 'G3FroJr4W6d12hQb2RtafHDZDFv2';
     let taskRef = firebaseDb.ref('tasks/' + userId + '/' + payload.id);
     taskRef.set(payload.task, error => {
       if (error) {
         showErrorMessage(error.message);
+      } else {
+        Notify.create('Task added');
       }
     });
   },
   fbUpdateTask({}, payload) {
     let userId = firebaseAuth.currentUser.uid;
-    userId = 'G3FroJr4W6d12hQb2RtafHDZDFv2';
+
     let taskRef = firebaseDb.ref('tasks/' + userId + '/' + payload.id);
     taskRef.update(payload.updates, error => {
       if (error) {
         showErrorMessage(error.message);
+      } else {
+        let keys = Object.keys(payload.updates);
+        if (!(keys.includes('completed') && keys.length == 1)) {
+          Notify.create('Task updated');
+        }
       }
     });
   },
   fbRemoveTask({}, taskId) {
     let userId = firebaseAuth.currentUser.uid;
-    userId = 'G3FroJr4W6d12hQb2RtafHDZDFv2';
     let taskRef = firebaseDb.ref('tasks/' + userId + '/' + taskId);
     taskRef.remove(error => {
       if (error) {
         showErrorMessage(error.message);
+      } else {
+        Notify.create('Task removed');
       }
     });
   },
